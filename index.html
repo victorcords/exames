@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido de Exames</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://em-content.zobj.net/source/microsoft/407/test-tube_1f9ea.png">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --border-color: #e0e0e0;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --text-color: #212529;
+            --bg-color: #ffffff;
+            --card-bg: #ffffff;
+            --input-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4895ef;
+            --secondary-color: #4361ee;
+            --light-color: #121212;
+            --dark-color: #f8f9fa;
+            --border-color: #333333;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --text-color: #e0e0e0;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2d2d2d;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-section, .preview-section {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 2px;
+            margin-left: 3rem;
+            text-align: left;
+            font-size: 2rem;
+            padding-bottom: 1rem;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            margin-bottom: 1rem;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+        
+        textarea {
+            min-height: 100px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s;
+            margin-top:10px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        #pdfPreview {
+            width: 100%;
+            height: 1005px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--input-bg);
+        }
+
+         /* Ajustes para os botões */
+         .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .button-group button {
+            margin-top: 0;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        #adicionarExame {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        #imprimirPdf {
+            background-color: var(--success-color);
+        }
+
+        .exame-item {
+            display: flex;
+            align-items: center;  /* Alinha verticalmente */
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: rgba(67, 97, 238, 0.05);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .exame-item input {
+            flex: 1;
+            margin-bottom: 0;
+            background-color: var(--input-bg);
+            
+        }
+        
+        .exame-item button {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0; /* Impede que o botão encolha */
+        }
+        
+        .exame-item button:hover {
+            transform: scale(1.1);
+        }
+        
+        .select2-container--default .select2-selection--single {
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            height: auto;
+            min-height: 42px;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .select2-dropdown {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--primary-color);
+        }
+        
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .form-section, .preview-section {
+                width: 100%;
+            }
+        }
+
+        .print-notice {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        
+        .print-notice strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .print-notice p {
+            margin: 0;
+        }
+
+        .theme-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #themeLabel {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+        
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Adiciona transição suave para todos os elementos */
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Pedido de Exames</h1>
+    <div class="theme-switcher">
+        <label class="theme-switch">
+            <input type="checkbox" id="themeToggle">
+            <span class="slider round"></span>
+        </label>
+        <span id="themeLabel">Modo Escuro</span>
+    </div>
+    <div class="container">
+        <div class="form-section">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" placeholder="Digite o nome">
+
+            <label for="dataNascimento">Data de Nascimento:</label>
+            <input type="date" id="dataNascimento">
+
+            <label for="sexo">Sexo:</label>
+            <select id="sexo">
+                <option value="">Selecione...</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+            </select>
+
+            <label for="nomeMae">Nome da Mãe:</label>
+            <input type="text" id="nomeMae" placeholder="Nome da mãe">
+
+            <label for="prontuario">Prontuário:</label>
+            <input type="text" id="prontuario" placeholder="Número do prontuário">
+
+            <label for="setorOrigem">Setor de Origem:</label>
+            <input type="text" id="setorOrigem" placeholder="Setor de origem">
+
+            <label for="numeroLeito">Nº do Leito:</label>
+            <input type="text" id="numeroLeito" placeholder="Número do leito">
+
+            <label for="exames">Exames Solicitados:</label>
+            <select id="exames" class="js-exames" style="width: 100%;">
+                <option value=""></option>
+                <option value="DOPPLER VENOSO E ARTERIAL DE MMII">DOPPLER VENOSO E ARTERIAL DE MMII</option>
+                <option value="ECG DE 12 DERIVAÇÕES">ECG DE 12 DERIVAÇÕES</option>
+                <option value="RX DE TÓRAX PA E PERFIL">RX DE TÓRAX PA E PERFIL</option>
+                <option value="ENDOSCOPIA DIGESTIVA ALTA COM BIÓPSIA">ENDOSCOPIA DIGESTIVA ALTA COM BIÓPSIA</option>
+                <option value="COLONOSCOPIA COM BIÓPSIA">COLONOSCOPIA COM BIÓPSIA</option>
+                <option value="ESPIROMETRIA COM PROVA BRONCODILATADORA">ESPIROMETRIA COM PROVA BRONCODILATADORA</option>
+                <option value="NT-proBNP">NT-proBNP</option>
+                <option value="BNP">BNP</option>
+            </select>
+            <div id="examesAdicionados"></div>
+            <button id="adicionarExame">Adicionar Exame</button>
+
+            <label for="indicacaoClinica">Indicação Clínica:</label>
+            <textarea id="indicacaoClinica" rows="4" placeholder="Descreva a indicação clínica"></textarea>
+
+            <label for="dataSolicitacao">Data de Solicitação:</label>
+            <input type="date" id="dataSolicitacao" value="">
+
+            <div class="button-group">
+                <button id="gerarPdf">Gerar PDF</button>
+                <button id="imprimirPdf" style="display: none;">Imprimir PDF</button>
+            </div>
+        </div>
+
+        
+
+        <div class="preview-section">
+            <h2>Pré-visualização</h2>
+            <iframe id="pdfPreview" src="about:blank"></iframe>
+            <div class="print-notice">
+                <p>⚠️ Ao clicar em "Imprimir PDF", altere o layout para <strong>paisagem</strong> e a escala para <strong>tamanho atual</strong> (em "mais opções") nas configurações de impressão.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
