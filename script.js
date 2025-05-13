@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('edgeModal').style.display = 'block';
     // Configura Select2 para o dropdown de exames
     $('.js-exames').select2({
         placeholder: "Selecione ou digite um exame",
@@ -154,15 +155,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Botão para imprimir o PDF
     document.getElementById('imprimirPdf').addEventListener('click', function() {
-        const iframe = document.getElementById('pdfPreview');
-        iframe.contentWindow.print();
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @page { size: landscape; margin: 0; }
-            body { margin: 0; padding: 0; }
-            div { page-break-after: always; }
-        `;
-        
+        if(confirm('Ao imprimir, por favor altere o layout para PAISAGEM e a escala (%) para TAMANHO REAL (clique em "Mais Configurações) nas configurações de impressão.\n\nDeseja continuar?')) {
+            const iframe = document.getElementById('pdfPreview');
+            iframe.contentWindow.print();
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @page { size: landscape; margin: 0; }
+                body { margin: 0; padding: 0; }
+                div { page-break-after: always; }
+            `;
+        }
     });
 
     // Permite acessar `removerExame` globalmente (para o HTML)
