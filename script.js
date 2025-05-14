@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Botão para imprimir o PDF
     document.getElementById('imprimirPdf').addEventListener('click', function() {
-        if(confirm('Ao imprimir, por favor altere o layout para PAISAGEM e a escala (%) para TAMANHO REAL (clique em "Mais Configurações) nas configurações de impressão.\n\nDeseja continuar?')) {
+        if(confirm('Ao imprimir, por favor altere o layout para PAISAGEM e a escala (%) para TAMANHO REAL (clique em "Mais Configurações") nas configurações de impressão. Outra opção é alterar "Páginas por Folha" para 2.\n\nDeseja continuar?')) {
             const iframe = document.getElementById('pdfPreview');
             iframe.contentWindow.print();
             const style = document.createElement('style');
